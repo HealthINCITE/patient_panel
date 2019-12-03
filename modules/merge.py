@@ -9,7 +9,7 @@ def warn(*args, **kwargs):
 import warnings
 warnings.warn = warn
 
-def merge(per_df, per_col, per_date_col, per_date_format, ref_df,ref_date_col, ref_date_format):
+def merge(per_df, per_col, per_date_col, per_date_format, ref_df,ref_date_col, ref_date_format, gen_features=True):
     #start by preprocessing referrals
     
     ref_df, translate=preprocess_referrals(ref_df, per_col, ref_date_col, ref_date_format)
@@ -21,11 +21,12 @@ def merge(per_df, per_col, per_date_col, per_date_format, ref_df,ref_date_col, r
     df=fill_na(df,['lab_','ref'],0, int)
     df=fill_na(df,['class'],'h',str)
     df=fill_na(df,['labels'],'0',str)
-    df=generate_features(df, per_col, ['lab_'], 'lag_1')
-    df=fill_na(df,['lag1_lab'],'0',int)
-    
-    df=generate_features(df, per_col, ['lag1_lab'], 'sum')
-    df=generate_features(df, per_col, ['lag1_lab'], 'win_6')
+    if gen_features==True:
+        df=generate_features(df, per_col, ['lab_'], 'lag_1')
+        df=fill_na(df,['lag1_lab'],'0',int)
+        
+        df=generate_features(df, per_col, ['lag1_lab'], 'sum')
+        df=generate_features(df, per_col, ['lag1_lab'], 'win_6')
     return df, translate
 
 def fill_na(df, patterns, value, c_type):
