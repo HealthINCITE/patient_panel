@@ -47,7 +47,7 @@ def generate_features(df, per_col, patterns, tag, units=0):
                 df['win'+str(num)+'_'+x[-5:]]=df[['person_id',x]].sort_index().groupby(per_col).rolling(num, min_periods=1).sum().astype(int)[x].to_numpy(dtype=int)
             elif tag[0:3]=='lag':
                 num=int(tag.split('_')[1])
-                df['lag'+str(num)+'_'+x]=df[['person_id',x]].sort_index().groupby(per_col).shift(num)
+                df['lag'+str(num)+'_'+x]=df[['person_id',x]].groupby(per_col).shift(num)
     return df
 
 def preprocess_persons(df, person_col, date_col, date_format):
